@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.alerts import router as alerts_router
-from routes.stats  import router as stats_router
+from routes.stats import router as stats_router
 
 app = FastAPI(
     title="NIDS Dashboard API",
@@ -9,7 +9,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Allow React frontend to call the API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,9 +16,8 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Routes
 app.include_router(alerts_router, prefix="/api/alerts", tags=["Alerts"])
-app.include_router(stats_router,  prefix="/api/stats",  tags=["Stats"])
+app.include_router(stats_router, prefix="/api/stats", tags=["Stats"])
 
 
 @app.get("/")

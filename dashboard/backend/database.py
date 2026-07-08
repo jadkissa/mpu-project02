@@ -10,8 +10,10 @@ DB_CONFIG = {
     "port": int(os.getenv("DB_PORT", 5432))
 }
 
+
 def get_connection():
     return psycopg2.connect(**DB_CONFIG)
+
 
 def query(sql: str, params=None):
     conn = get_connection()
@@ -21,3 +23,23 @@ def query(sql: str, params=None):
     cur.close()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def execute_transaction(statements: list[tuple[str, tuple]]):
+    """
+    Execute multiple INSERT/UPDATE statements as a single atomic transaction.
+    statements: list of (sql, params) tuples, executed in order.
+    All succeed together, or all roll back together on failure.
+    """
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        for sql, params in statements:
+            cur.execute(sql, params or ())
+        conn.commit()
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        cur.close()
+        conn.close()
