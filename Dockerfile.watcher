@@ -1,0 +1,5 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN pip install psycopg2-binary watchdog
+COPY alerts_watcher.py .
+CMD ["python", "-u", "alerts_watcher.py"]

@@ -1,0 +1,89 @@
+/* ========================================
+   Stats Cards
+   ======================================== */
+
+   .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    cursor: default;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(0, 212, 255, 0.3);
+  }
+  
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .stat-content {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+  }
+  
+  .stat-title {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  
+  .stat-trend {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 4px;
+    display: inline-block;
+  }
+  
+  /* Skeleton Loading */
+  .skeleton {
+    animation: shimmer 1.5s infinite;
+  }
+  
+  .skeleton-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card-hover);
+  }
+  
+  .skeleton-text {
+    flex: 1;
+    height: 40px;
+    border-radius: 6px;
+    background: var(--bg-card-hover);
+  }
+  
+  @keyframes shimmer {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }

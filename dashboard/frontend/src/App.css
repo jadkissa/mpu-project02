@@ -1,0 +1,325 @@
+/* ========================================
+   M-NIDS Dashboard - Dark Theme
+   ======================================== */
+
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+   :root {
+     --bg-primary: #0a0e1a;
+     --bg-secondary: #111827;
+     --bg-card: #1a1f2e;
+     --bg-card-hover: #1f2937;
+     --border-color: #2d3748;
+     --text-primary: #e2e8f0;
+     --text-secondary: #a0aec0;
+     --text-muted: #718096;
+     
+     --accent-blue: #00d4ff;
+     --accent-cyan: #06b6d4;
+     --accent-purple: #8b5cf6;
+     --accent-green: #10b981;
+     
+     --danger: #ef4444;
+     --danger-bg: rgba(239, 68, 68, 0.1);
+     --warning: #f59e0b;
+     --warning-bg: rgba(245, 158, 11, 0.1);
+     --success: #10b981;
+     --success-bg: rgba(16, 185, 129, 0.1);
+     
+     --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+     --radius: 12px;
+     --radius-sm: 8px;
+     --transition: all 0.3s ease;
+   }
+   
+   * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+   }
+   
+   body {
+     font-family: 'Inter', sans-serif;
+     background: var(--bg-primary);
+     color: var(--text-primary);
+     min-height: 100vh;
+   }
+   
+   /* ========================================
+      Dashboard Container
+      ======================================== */
+   
+   .dashboard {
+     min-height: 100vh;
+     background: linear-gradient(135deg, var(--bg-primary) 0%, #0f1724 100%);
+   }
+   
+   /* ========================================
+      Header
+      ======================================== */
+   
+   .header {
+     background: var(--bg-secondary);
+     border-bottom: 1px solid var(--border-color);
+     padding: 16px 32px;
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     box-shadow: var(--shadow);
+     position: sticky;
+     top: 0;
+     z-index: 100;
+     backdrop-filter: blur(10px);
+   }
+   
+   .header-left {
+     display: flex;
+     align-items: center;
+     gap: 16px;
+   }
+   
+   .logo-container {
+     width: 50px;
+     height: 50px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+   }
+   
+   .logo-icon {
+     width: 50px;
+     height: 50px;
+     filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.5));
+   }
+   
+   .dashboard-title {
+     font-size: 1.8rem;
+     font-weight: 700;
+     background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+     -webkit-background-clip: text;
+     -webkit-text-fill-color: transparent;
+     letter-spacing: -0.5px;
+   }
+   
+   .dashboard-subtitle {
+     font-size: 0.8rem;
+     color: var(--text-muted);
+     margin-top: 2px;
+     letter-spacing: 1px;
+   }
+   
+   .header-right {
+     display: flex;
+     align-items: center;
+     gap: 24px;
+   }
+   
+   .status-indicator {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     color: var(--text-secondary);
+     font-size: 0.9rem;
+   }
+   
+   .status-dot {
+     width: 10px;
+     height: 10px;
+     background: var(--success);
+     border-radius: 50%;
+     animation: pulse 2s infinite;
+     box-shadow: 0 0 10px var(--success);
+   }
+   
+   @keyframes pulse {
+     0%, 100% { opacity: 1; }
+     50% { opacity: 0.5; }
+   }
+   
+   .update-time {
+     display: flex;
+     align-items: center;
+     gap: 6px;
+     color: var(--text-muted);
+     font-size: 0.85rem;
+   }
+   
+   /* ========================================
+      Sections
+      ======================================== */
+   
+   .stats-section {
+     padding: 24px 32px;
+   }
+   
+   .charts-section {
+     padding: 0 32px 24px;
+     display: grid;
+     grid-template-columns: 1fr 350px;
+     gap: 24px;
+   }
+   
+   .alerts-section {
+     padding: 0 32px 24px;
+     display: flex;
+     flex-direction: column;
+     gap: 24px;
+   }
+   
+   /* ========================================
+      Cards
+      ======================================== */
+   
+   .card {
+     background: var(--bg-card);
+     border: 1px solid var(--border-color);
+     border-radius: var(--radius);
+     padding: 24px;
+     box-shadow: var(--shadow);
+     transition: var(--transition);
+   }
+   
+   .card:hover {
+     box-shadow: var(--shadow-lg);
+     border-color: rgba(0, 212, 255, 0.2);
+   }
+   
+   .card-header {
+     display: flex;
+     align-items: center;
+     gap: 10px;
+     margin-bottom: 20px;
+     padding-bottom: 16px;
+     border-bottom: 1px solid var(--border-color);
+   }
+   
+   .card-header h3 {
+     font-size: 1.1rem;
+     font-weight: 600;
+     color: var(--text-primary);
+     flex: 1;
+   }
+   
+   .card-header svg {
+     flex-shrink: 0;
+   }
+   
+   /* ========================================
+      Badges
+      ======================================== */
+   
+   .badge {
+     padding: 4px 12px;
+     border-radius: 20px;
+     font-size: 0.8rem;
+     font-weight: 600;
+   }
+   
+   .badge-red {
+     background: var(--danger-bg);
+     color: var(--danger);
+     border: 1px solid rgba(239, 68, 68, 0.3);
+   }
+   
+   .badge-purple {
+     background: rgba(139, 92, 246, 0.1);
+     color: var(--accent-purple);
+     border: 1px solid rgba(139, 92, 246, 0.3);
+   }
+   
+   /* ========================================
+      Layers Info
+      ======================================== */
+   
+   .layers-info {
+     display: flex;
+     flex-direction: column;
+     gap: 16px;
+   }
+   
+   .layer-item {
+     display: flex;
+     align-items: center;
+     gap: 12px;
+     padding: 12px;
+     background: var(--bg-secondary);
+     border-radius: var(--radius-sm);
+     transition: var(--transition);
+   }
+   
+   .layer-item:hover {
+     background: var(--bg-card-hover);
+   }
+   
+   .layer-icon {
+     font-size: 1.5rem;
+     width: 40px;
+     height: 40px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     background: var(--bg-primary);
+     border-radius: var(--radius-sm);
+   }
+   
+   .layer-item strong {
+     color: var(--text-primary);
+     font-size: 0.9rem;
+   }
+   
+   .layer-item p {
+     color: var(--text-muted);
+     font-size: 0.8rem;
+     margin-top: 2px;
+   }
+   
+   /* ========================================
+      Footer
+      ======================================== */
+   
+   .footer {
+     text-align: center;
+     padding: 24px;
+     color: var(--text-muted);
+     font-size: 0.8rem;
+     border-top: 1px solid var(--border-color);
+   }
+   
+   /* ========================================
+      Responsive
+      ======================================== */
+   
+   @media (max-width: 1024px) {
+     .charts-section {
+       grid-template-columns: 1fr;
+     }
+     
+     .header {
+       padding: 12px 16px;
+     }
+     
+     .stats-section,
+     .charts-section,
+     .alerts-section {
+       padding: 16px;
+     }
+   }
+   
+   @media (max-width: 768px) {
+     .dashboard-title {
+       font-size: 1.4rem;
+     }
+     
+     .header-right {
+       display: none;
+     }
+   }
+
+
+   .charts-alerts-section {
+    padding: 0 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
