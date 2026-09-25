@@ -608,40 +608,11 @@ The closing evidence for the testing section is a single "Detection Timeline wit
 
 ---
 
-## Roadmap
-
-**Completed**
-
-- [x] Snort 3 containerized with host network access
-- [x] alerts_watcher forwarding Snort alerts to the backend via HTTP ingest
-- [x] Isolation Forest exfiltration model (25 per-flow features, threshold `-0.10`)
-- [x] Isolation Forest scan_persistent model (10 windowed per-src-IP features)
-- [x] Unified `ml_detector.py` running both models in parallel threads
-- [x] Fixed detection-layer independence bug (per-flow model now runs unconditionally)
-- [x] FastAPI backend with unified alert ingest and stats endpoints
-- [x] React dashboard with live data refresh, port/service mapping, priority filters
-- [x] Nginx reverse proxy routing to frontend, backend, and n8n
-- [x] WebGoat as attack simulation target
-- [x] Real-time Telegram alerting via n8n and PostgreSQL NOTIFY
-- [x] Threshold validation via controlled timeline testing
-- [x] Layer-by-layer testing: exfiltration (bulk transfer, SSH/SCP), scan (slow scan, connection flood), Snort cross-comparison
-
-**Planned**
-
-- [ ] East-West (lateral movement) detection layer, using an alternative approach
-- [ ] Broader idle-connection and edge-case scan testing
-
----
-
 ## Authors
 
-- **Jad** — [GitHub profile link]
-- **Abdulkader Motraji** — [GitHub profile link]
+- **Jad Issa** — 
+- **Abdulkader Motraji** 
 
-Manara Private University — Computer Engineering, Final-Year Graduation Project
+Manara Private University — IT Engineering, Final-Year - Graduation Project
 
 ---
-
-## License
-
-This project is licensed under the MIT License.
