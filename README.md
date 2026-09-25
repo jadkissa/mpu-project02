@@ -1,8 +1,7 @@
 # M-NIDS — Multi-Layer Network Intrusion Detection System
 
-نظام هجين لكشف الهجمات السيبرانية
-
-Graduation Project — Security Engineering · DevOps
+M-NIDS: A Multi-Layer Hybrid Network Intrusion Detection System Combining Signature-Based and Unsupervised Machine Learning
+Final Graduation Project
 
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04_LTS-E95420?style=flat&logo=ubuntu&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)
