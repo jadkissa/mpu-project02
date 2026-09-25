@@ -103,3 +103,12 @@ logs/
 *.crt
 secrets/
 credentials/
+
+n8n_data/
+snort_logs/
+captures/
+migrations/
+*.json
+full_flows.csv
+cleardb.txt
+EOF
