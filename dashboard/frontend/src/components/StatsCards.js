@@ -20,11 +20,11 @@ function StatCard({ title, value, color, icon }) {
   );
 }
 
-function StatsCards({ stats }) {
+function StatsCards({ stats, mlAlerts }) {
   if (!stats) {
     return (
       <div className="stats-grid">
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3, 4].map((i) => (
           <div key={i} className="stat-card skeleton">
             <div className="skeleton-icon"></div>
             <div className="skeleton-text"></div>
@@ -90,6 +90,24 @@ function StatsCards({ stats }) {
             <circle cx="12" cy="12" r="10" />
             <line x1="12" y1="8" x2="12" y2="12" />
             <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        }
+      />
+      <StatCard
+        title="ML Alerts"
+        value={mlAlerts?.length || 0}
+        color="#8b5cf6"
+        icon={
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z" />
+            <circle cx="12" cy="14" r="2" />
           </svg>
         }
       />

@@ -5,5 +5,7 @@ const API = axios.create({
 });
 
 export const getSnortAlerts = () => API.get("/alerts/snort");
+export const getMlAlerts = () =>
+  API.get("/alerts", { params: { source_type: "ml_model" } });
 export const getSummary = () => API.get("/stats/summary");
 export const getByProtocol = () => API.get("/stats/by-protocol");

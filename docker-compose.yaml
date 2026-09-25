@@ -55,9 +55,11 @@ services:
     user: root
     volumes:
       - ./snort_logs:/app/snort_logs
+      - ml_alerts:/app/ml_alerts 
     environment:
       - BACKEND_URL=http://backend:8000/api/alerts/ingest
       - TZ=Asia/Damascus
+      - ML_ALERT_FILE=/app/ml_alerts/alerts.log
     depends_on:
       - backend
     networks:
@@ -118,8 +120,29 @@ services:
         ipv4_address: 172.28.0.100
     restart: unless-stopped
 
+  ml_detector:
+    build: ./ml_model
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - MODEL_PATH=/app/models/isolation_forest.joblib
+      - ALERT_LOG_PATH=/var/log/ml_detector/alerts.log
+      - SOURCE_TYPE=ml_anomaly
+      - IFACE=enp0s3
+      - SCALER_PATH=/app/models/scaler.joblib
+      - MODEL_VERSION=hybrid_v2
+      - FLOW_CSV_PATH=/var/log/ml_detector/flows.csv
+      - SCAN_MODEL_PATH=/app/models/scan_persistent_model.joblib
+      - SCAN_SCALER_PATH=/app/models/scan_persistent_scaler.joblib
+      - SCAN_WINDOW_SECONDS=60
+      - SCAN_THRESHOLD=-0.15
+    volumes:
+      - ./models:/app/models:ro          
+      - ml_alerts:/var/log/ml_detector  
 volumes:
   db_data:
+  ml_alerts:
 networks:
   mpu-network:
     driver: bridge

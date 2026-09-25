@@ -1,39 +1,17 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from typing import Optional, Literal
+from fastapi import APIRouter, HTTPException, Query
+from typing import Literal
+from psycopg2.extras import Json
+
 from database import query, execute_transaction
+from schemas.alerts import AlertIngest
 
 router = APIRouter()
-
-
-class AlertIngest(BaseModel):
-    source_type: Literal["snort", "ml_north_south", "ml_east_west"]
-    timestamp: str
-    src_ip: str
-    dst_ip: str
-    src_port: Optional[int] = None
-    dst_port: Optional[int] = None
-    protocol: str
-
-    # Snort-specific fields
-    signature_id: Optional[int] = None
-    signature_gen: Optional[int] = None
-    signature_rev: Optional[int] = None
-    signature_msg: Optional[str] = None
-    priority: Optional[int] = None
-
-    # ML-specific fields (reserved for later use)
-    anomaly_score: Optional[float] = None
-    is_anomaly: Optional[bool] = None
-    model_version: Optional[str] = None
-
 
 PROTO_MAP = {"tcp": 6, "udp": 17, "icmp": 1}
 
 
-@router.get("/snort")
-def get_snort_alerts(limit: int = 1000):
-    rows = query("""
+def _fetch_snort_alerts(limit: int):
+    return query("""
         SELECT
             e.sid,
             e.cid,
@@ -51,6 +29,43 @@ def get_snort_alerts(limit: int = 1000):
         ORDER BY e.timestamp DESC
         LIMIT %s
     """, (limit,))
+
+
+def _fetch_ml_alerts(limit: int):
+    return query("""
+        SELECT
+            id,
+            timestamp,
+            host(ip_src) AS ip_src,
+            host(ip_dst) AS ip_dst,
+            layer4_sport,
+            layer4_dport,
+            ip_proto,
+            anomaly_score,
+            model_version,
+            detection_layer,
+            features_snapshot
+        FROM ml_alert
+        ORDER BY timestamp DESC
+        LIMIT %s
+    """, (limit,))
+
+
+@router.get("")
+def get_alerts(
+    source_type: Literal["snort", "ml_model"] = Query(..., description="Alert source filter"),
+    limit: int = 1000,
+):
+    if source_type == "snort":
+        rows = _fetch_snort_alerts(limit)
+    else:
+        rows = _fetch_ml_alerts(limit)
+    return {"data": rows, "source_type": source_type}
+
+
+@router.get("/snort")
+def get_snort_alerts(limit: int = 1000):
+    rows = _fetch_snort_alerts(limit)
     return {"data": rows}
 
 
@@ -58,8 +73,7 @@ def get_snort_alerts(limit: int = 1000):
 def ingest_alert(alert: AlertIngest):
     if alert.source_type == "snort":
         return _ingest_snort_alert(alert)
-    else:
-        raise HTTPException(status_code=501, detail="ML alert ingestion not implemented yet")
+    return _ingest_ml_alert(alert)
 
 
 def _ingest_snort_alert(alert: AlertIngest):
@@ -102,5 +116,39 @@ def _ingest_snort_alert(alert: AlertIngest):
     try:
         execute_transaction(statements)
         return {"status": "accepted", "source_type": "snort"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+def _ingest_ml_alert(alert: AlertIngest):
+    if alert.anomaly_score is None:
+        raise HTTPException(status_code=422, detail="anomaly_score is required for ml_model alerts")
+    if not alert.model_version:
+        raise HTTPException(status_code=422, detail="model_version is required for ml_model alerts")
+
+    proto_num = PROTO_MAP.get(alert.protocol.lower(), 0)
+    features = Json(alert.features_snapshot) if alert.features_snapshot is not None else None
+    detection_layer = alert.detection_layer or "isolation_forest"
+
+    statements = [
+        ("""
+            INSERT INTO ml_alert
+            (timestamp, ip_src, ip_dst, layer4_sport, layer4_dport, ip_proto,
+             anomaly_score, model_version, detection_layer, features_snapshot)
+            VALUES (
+                %s::timestamptz,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s
+            )
+        """, (
+            alert.timestamp,
+            alert.src_ip, alert.dst_ip, alert.src_port, alert.dst_port,
+            proto_num, alert.anomaly_score, alert.model_version, detection_layer, features,
+        )),
+    ]
+
+    try:
+        execute_transaction(statements)
+        return {"status": "accepted", "source_type": "ml_model"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

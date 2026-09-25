@@ -1,0 +1,6 @@
+{
+  "model_version": "isolation_forest_v1",
+  "n_features": 25,
+  "n_training_flows": 576,
+  "contamination": 0.05
+}

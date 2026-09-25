@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from "react";
 import StatsCards from "./components/StatsCards";
 import SnortAlerts from "./components/SnortAlerts";
+import MlAlerts from "./components/MlAlerts";
 import ProtocolChart from "./components/ProtocolChart";
-import { getSummary, getSnortAlerts, getByProtocol } from "./api";
+import { getSummary, getSnortAlerts, getMlAlerts, getByProtocol } from "./api";
 import "./App.css";
 
 function App() {
   const [stats, setStats] = useState(null);
   const [snort, setSnort] = useState([]);
+  const [mlAlerts, setMlAlerts] = useState([]);
   const [protocols, setProtocols] = useState([]);
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
   const fetchData = async () => {
     try {
-      const [s, sn, pr] = await Promise.all([
+      const [s, sn, ml, pr] = await Promise.all([
         getSummary(),
         getSnortAlerts(),
+        getMlAlerts(),
         getByProtocol(),
       ]);
       setStats(s.data);
       setSnort(sn.data.data);
+      setMlAlerts(ml.data.data);
       setProtocols(pr.data.data);
       setLastUpdate(new Date());
     } catch (err) {
@@ -29,7 +33,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 500);
+    const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -97,28 +101,28 @@ function App() {
 
       {/* Stats Cards */}
       <section className="stats-section">
-        <StatsCards stats={stats} />
+        <StatsCards stats={stats} mlAlerts={mlAlerts} />
       </section>
 
       {/* Charts + Alerts */}
       <section className="charts-alerts-section">
-        <div className="card chart-card">
+        <div className="card">
           <div className="card-header">
             <svg
               width="20"
               height="20"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
+              stroke="#8b5cf6"
               strokeWidth="2"
             >
-              <rect x="18" y="3" width="4" height="18" />
-              <rect x="11" y="8" width="4" height="13" />
-              <rect x="4" y="13" width="4" height="8" />
+              <path d="M12 2a4 4 0 0 0-4 4v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2V6a4 4 0 0 0-4-4z" />
+              <circle cx="12" cy="14" r="2" />
             </svg>
-            <h3>Alerts by Protocol</h3>
+            <h3>ML Model & Traffic Rules Alerts</h3>
+            <span className="badge badge-purple">{mlAlerts.length}</span>
           </div>
-          <ProtocolChart data={protocols} />
+          <MlAlerts alerts={mlAlerts} />
         </div>
 
         <div className="card">
@@ -137,8 +141,30 @@ function App() {
             </svg>
             <h3>Snort Alerts</h3>
             <span className="badge badge-red">{snort.length}</span>
+            <span className="badge badge-purple" style={{ marginLeft: "8px" }}>
+              {mlAlerts.length}
+            </span>
           </div>
           <SnortAlerts alerts={snort} />
+        </div>
+
+        <div className="card chart-card">
+          <div className="card-header">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="18" y="3" width="4" height="18" />
+              <rect x="11" y="8" width="4" height="13" />
+              <rect x="4" y="13" width="4" height="8" />
+            </svg>
+            <h3>Alerts by Protocol</h3>
+          </div>
+          <ProtocolChart data={protocols} />
         </div>
       </section>
 
